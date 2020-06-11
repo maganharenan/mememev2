@@ -100,8 +100,8 @@
 		013E5244248986F500131CD2 /* MemeGenerator */ = {
 			isa = PBXGroup;
 			children = (
-				019AC53A247DE4B0004B5743 /* MemeGeneratorView.swift */,
 				019AC536247DE4B0004B5743 /* MemeGeneratorViewModel.swift */,
+				019AC53A247DE4B0004B5743 /* MemeGeneratorView.swift */,
 			);
 			path = MemeGenerator;
 			sourceTree = "<group>";

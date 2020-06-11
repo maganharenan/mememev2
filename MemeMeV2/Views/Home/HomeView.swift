@@ -10,6 +10,7 @@ import SwiftUI
 import Combine
 
 struct HomeView: View {
+    @State var screenSize = UIScreen.main.bounds
     @State var selection = 1
     @State var showMemeGenerator = false
     @State var showControllers = true
@@ -34,7 +35,8 @@ struct HomeView: View {
             }
             
             MemeGeneratorView(showMemeGenerator: $showMemeGenerator)
-                .offset(y: showMemeGenerator ? 0 : 1000 )
+                .frame(maxWidth: showMemeGenerator ? nil : 100)
+                .offset(y: showMemeGenerator ? 0 : screenSize.height )
                 .animation(.easeIn)
         }
     }

@@ -12,6 +12,7 @@ import Combine
 struct SentMemesGridView: View {
     @EnvironmentObject var orientationInfo: OrientationInfo
     @State var showDelete = false
+    @State var refreshContent = false
     @Binding var showControllers: Bool
     @Binding var showMemeGenerator: Bool
     
@@ -24,12 +25,13 @@ struct SentMemesGridView: View {
                     Color(#colorLiteral(red: 0, green: 0, blue: 0, alpha: 1))
                         .edgesIgnoringSafeArea(.all)
 
-                    if orientationInfo.orientation == .landscape {
-                        GridStructure(showControllers: $showControllers, showDelete: $showDelete)
-                    } else {
-                        GridStructure(showControllers: $showControllers, showDelete: $showDelete)
+                    if !refreshContent {
+                        if orientationInfo.orientation == .landscape {
+                            GridStructure(showControllers: $showControllers, showDelete: $showDelete, refreshContent: $refreshContent)
+                        } else {
+                            GridStructure(showControllers: $showControllers, showDelete: $showDelete, refreshContent: $refreshContent)
+                        }
                     }
-                   
                 }
                 .background(Color.black.edgesIgnoringSafeArea(.all))
                 .navigationBarTitle(Text("Sent Memes"), displayMode: .inline)
@@ -59,6 +61,7 @@ struct GridStructure: View {
     @ObservedObject var memeStore = MemeStore()
     @Binding var showControllers: Bool
     @Binding var showDelete: Bool
+    @Binding var refreshContent: Bool
     
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -72,7 +75,7 @@ struct GridStructure: View {
                             if self.getCurrentIndex(row: row, col: col) < self.memeStore.memes.count {
                                 //Prints the thumbnail of the memed image
                                 NavigationLink(destination: ImageDetailView(showControllers: self.$showControllers, image: self.memeStore.memes[self.getCurrentIndex(row: row, col: col)].memedImage)) {
-                                    GridItem(memedImage: self.memeStore.memes[row * self.defineColumnsNumber() + col].memedImage, size: self.defineThumbnailSize(), showDelete: self.$showDelete)
+                                    GridItem(memedImage: self.memeStore.memes[row * self.defineColumnsNumber() + col].memedImage, size: self.defineThumbnailSize(), index: self.getCurrentIndex(row: row, col: col) ,showDelete: self.$showDelete, memeStore: self.$memeStore.memes, refreshContent: self.$refreshContent)
                                 }
                             } else {
                                 //Prints an empty space to compose the grid
@@ -95,7 +98,10 @@ struct GridStructure: View {
 struct GridItem: View {
     var memedImage: UIImage
     var size: CGFloat
+    var index: Int
     @Binding var showDelete: Bool
+    @Binding var memeStore: [Meme]
+    @Binding var refreshContent: Bool
     
     var body: some View {
         Image(uiImage: memedImage)
@@ -111,7 +117,12 @@ struct GridItem: View {
                     
                     VStack {
                         Button(action: {
-
+                            self.memeStore.remove(at: self.index)
+                            memesList.remove(at: self.index)
+                            self.refreshContent.toggle()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                self.refreshContent.toggle()
+                            }
                         }, label: {
                             Image(systemName: "trash.circle.fill")
                                 .foregroundColor(.white)

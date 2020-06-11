@@ -78,6 +78,8 @@ struct MemeGeneratorView: View {
                         .onReceive(Publishers.keyboardHeight) { self.keyboardHeight = $0 }
                 }
                 .padding(.vertical, 50)
+                .padding(.horizontal, 37)
+                .lineLimit(1)
             }
             .background(RectSettings(rect: $rect))
             
@@ -256,6 +258,7 @@ struct HomeView_Previews: PreviewProvider {
 
 //MARK: TextFieldStyle
 struct TextFieldItem: View {
+    @State var screenWidth = UIScreen.main.bounds.width
     @Binding var text: String
     @Binding var strokeColor: UIColor
     @Binding var fontSize: CGFloat
@@ -265,20 +268,28 @@ struct TextFieldItem: View {
         ZStack {
             //Stroke
             Text(text)
-                .offset(x: -2, y: 2)
+                .offset(x: 1, y: 1)
+            
             Text(text)
-                .offset(x: 2, y: 2)
+                .offset(x: -1, y: -1)
+            
             Text(text)
-                .offset(x: -2, y: -2)
+                .offset(x: -1, y: 1)
+            
             Text(text)
-                .offset(x: 2, y: -2)
+                .offset(x: 1, y: -1)
+            
+            Text(text)
+                .foregroundColor(Color(textColor))
             
             //Text
             TextField("", text: $text)
                 .font(.custom("HelveticaNeue-CondensedBlack", size: fontSize))
+                .frame(width: screenWidth)
+                .minimumScaleFactor(0.2)
                 .autocapitalization(.allCharacters)
                 .multilineTextAlignment(.center)
-                .foregroundColor(Color(textColor))
+                .foregroundColor(Color(.clear))
                 .onTapGesture {
                     //Erase the text if their value is equal to default value
                     if self.text == "TOP" || self.text == "BOTTOM" {
@@ -287,7 +298,9 @@ struct TextFieldItem: View {
             }
         }
         .font(.custom("HelveticaNeue-CondensedBlack", size: fontSize))
+        .minimumScaleFactor(0.2)
         .foregroundColor(Color(strokeColor))
+        
     }
 }
 

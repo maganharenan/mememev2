@@ -110,3 +110,27 @@ extension UINavigationController {
         UITableViewCell.appearance().backgroundColor = #colorLiteral(red: 0.1098039216, green: 0.1098039216, blue: 0.1176470588, alpha: 1)
     }
 }
+
+//MARK: Meme Generator Width
+extension HomeView {
+    func getWidth(orientation: OrientationInfo) -> CGFloat {
+        let screenSize = UIScreen.main.bounds
+        var width: CGFloat = 0
+        
+        if screenSize.height < screenSize.width {
+            if orientation.orientation == .landscape {
+                width = screenSize.width
+            } else {
+                width = screenSize.height
+            }
+        } else {
+            if orientation.orientation == .portrait {
+                width = screenSize.width
+            } else {
+                width = screenSize.height
+            }
+        }
+        
+        return width
+    }
+}

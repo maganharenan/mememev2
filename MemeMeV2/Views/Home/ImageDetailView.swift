@@ -29,6 +29,7 @@ struct ImageDetailView: View {
                     self.showControllers = true
                 }
         }
+        .navigationBarTitle("")
     }
 }
 
